@@ -1,0 +1,69 @@
+.Encabezado {
+    /*background-image: url('../fondo.jpg'); 
+    background-size: cover;*/
+    text-align: center;
+    margin-top: 50px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+.Titulo-Form,
+h2 {
+    text-align: center;
+    margin-top: 50px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.Fielset-cargar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+
+}
+
+.camposSegunTipo {
+    display: none;
+}
+
+/*label,
+input,
+select {
+    display: block;
+    margin-bottom: 10px;
+    width: 600px;
+}*/
+
+th,td,tr{
+    border:1px solid black;
+    text-align: center;
+    vertical-align: middle; 
+}
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.chk {
+    display:-webkit-inline-flex;
+    align-self: center;
+    justify-items: center;
+    font-weight: normal;
+    color: #333;
+}
+
+
+.cheks input[type="checkbox"] {
+    vertical-align:bottom;
+    margin-right: 10px; 
+}
+.parteSuperior{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+

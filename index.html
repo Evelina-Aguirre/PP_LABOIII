@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/estilos.css">
+    <script src="/Js/scripts.js" type="module" defer></script>
+    <title>ABM Vehículos</title>
+
+</head>
+
+<body>
+    <div class="Encabezado">
+        <h1>ABM Vehículos</h1>
+
+    </div>
+
+    <main>
+        <h2>Datos de lo vehículos en el sistema</h2>
+
+        <fieldset class="datos">
+            <div class="parteSuperior">
+                <label for="Filtrar">Filtrar por</label>
+                <select name="FiltrarPor" id="FiltrarPor">
+                    <option value="Todos">Todos</option>
+                    <option value="Aereo">Aereo</option>
+                    <option value="Terrestre">Terrestre</option>
+                </select>
+                <br>
+                <div class="calcular-promedio">
+                    <label for="calcularPromedio">Calcular edad promedio:</label>
+                    <input type="text" name="txtPromedio" class="txtPromedio" id="txtPromedio" readonly>
+                    <input type="button" value="Calcular" id="btnPromedio">
+                </div>
+            </div>
+            <div class="cheks">
+                <label for="chkId" class="chk">Id<input type="checkbox" id="chkId" name="chk" value="chkId"checked></label>
+                <label for="chkModelo" class="chk">Modelo<input type="checkbox" id="chkModelo" name="chk"
+                    value="chkModelo"checked> </label>
+                <label for="chkAnioFab" class="chk">Año<input type="checkbox" id="chkAnioFab" name="chk"
+                        value="chkAnioFab" checked> </label>
+                <label for="chkVelocidad" class="chk">Velocidad<input type="checkbox" id="chkVelocidad" name="chk"
+                        value="chkVelCantPuertasocidad"checked></label>
+                <label for="chkCantPuertas" class="chk">Puertas<input type="checkbox" id="chkCantPuertas" name="chk"
+                        value="chkCantPuertas"checked></label>
+                <label for="chkRuedas" class="chk">Ruedas<input type="checkbox" id="chkRuedas" name="chk"
+                        value="chkRuedas"checked></label>
+                        <label for="chkAltura" class="chk">Altura<input type="checkbox" id="chkAltura" name="chk"
+                            value="chkAltura"checked></label>
+                            <label for="chkAutonomia" class="chk">Autonomía<input type="checkbox" id="chkAutonomia" name="chk"
+                                value="chkAutonomia" checked></label>
+            </div>
+
+        </fieldset>
+        <section id="tabla">
+        </section>
+
+
+        <section class="Seccion-Formulario">
+            <h2 class="Titulo-Form">Completa el formulario</h2>
+            <!---                      SECCIÓN CARGAR INFORMACIÓN DE LA PERSONA                       -->
+            <form action="Formulario">
+                <div class="Fielset-cargar">
+                    <fieldset>
+                        <legend>Información del vehículo: </legend>
+                        <label for="id"> ID:</label>
+                        <input type="text" name="txtId" class="form-control" placeholder="Id" readonly>
+                        <br>
+                        <label for="modelo"> Modelo:</label>
+                        <input type="text" name="txtModelo" class="form-control" placeholder="Modelo" required>
+                        <br>
+                        <label for="anoFab"> Año:</label>
+                        <select name="txtAnoFab" id="txtAnoFab">Año fabricación</select>
+                        <br>
+                        <label for="velMax" class="form-label"> Velocidad máx.:</label>
+                        <select name="txtVelMax" id="txtVelMax">Velocidad</select>
+                        <br><br>
+                        <label for="tipo" class="form-label"> Tipo:</label>
+                        <select name="tipo" id="tipo"></select> <!----------------SELECT TIPO            -->
+                        <!---                 PARTE QUE VA A APARECER DE ACUERDO A QUÉ TIPO SE ELIJA               -->
+                        <fieldset id="camposSegunTipo" class="camposSegunTipo">
+
+                        </fieldset>
+                        <p class="botonesABM">
+                            <input type="submit" value="Agregar" id="btnAgregar">
+                            <input type="button" value="Eliminar" id="btnEliminar" disabled>
+                            <input type="button" value="Cancelar" id="btnCancelar">
+                        </p>
+
+                        <br>
+                        <br>
+                    </fieldset>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+</body>
+
+</html>
