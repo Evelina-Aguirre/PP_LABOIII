@@ -7,9 +7,8 @@ export default class Vehiculo {
       } else {
         this.id = id;
       }
-      if (typeof anoFab !== 'number' || !Number.isInteger(anoFab) || anoFab <= 1985 || edad >2023) {
-        throw new Error('El año no es válido. Debe ser un año mayor a 1985.');
-    }
+     
+    
       this.modelo = modelo || Sin_Modelo;
       this.anoFab=anoFab ||Sin_anoFab;
       this.velMax =velMax;
@@ -20,7 +19,16 @@ export default class Vehiculo {
     toString() {
         return `Modelo: ${this.modelo}, Año: ${this.anoFab}, velocidad: ${this.velMax}`;
     }
-
+  
     
-
+    
+  }
+  export function actualizarIds(datos) {
+    let maxId = 0;
+    datos.forEach((element) => {
+      if (element.id > maxId) {
+        maxId = element.id;
+      }
+    });
+    Vehiculo.ultimoId = maxId;
   }

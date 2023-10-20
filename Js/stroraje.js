@@ -1,3 +1,4 @@
+
 export const personas= JSON.parse(localStorage.getItem("datos")) || [];
 
 export function actualizarStorage(clave,data){

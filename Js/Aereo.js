@@ -1,4 +1,4 @@
-import Vehiculo from "./Vehiculo";
+import {Vehiculo} from "./Vehiculo";
 
 export class Aereo extends Vehiculo {
 

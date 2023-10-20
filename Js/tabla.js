@@ -34,7 +34,7 @@ export const crearTabla=(datos)=>{
 
     
     const tBody = document.createElement("tbody");
-    
+    console.log(datos);
     datos.forEach(element => {
         const tr=document.createElement("tr");
         for (const key in element) {
