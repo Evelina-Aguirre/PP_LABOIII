@@ -57,11 +57,23 @@ h2 {
     background-color: #fff;
     color: #333;
 }
+.Fielset-cargar input[type="text"]{
 
+}
 
 .camposSegunTipo {
     width: 400px;
     display: none;
+}
+.camposSegunTipo input[type="number"]{
+    align-items: center;
+    width: 98%;
+    padding: 1%;
+    margin: 1% 0;
+    border: none;
+    border-radius: 20px;
+    background-color: #fff;
+    color: #333;
 }
 
 
