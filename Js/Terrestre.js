@@ -1,5 +1,5 @@
 
-import {Vehiculo} from "./Vehiculo";
+import Vehiculo from "./Vehiculo";
 
 export class Terrestre extends Vehiculo {
     

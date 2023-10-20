@@ -211,7 +211,7 @@ $formulario.addEventListener("submit", (e) => {
     const { txtId, txtModelo, txtAnoFab, txtVelMax, txtAltura, txtAutonomia, txtCantPue, txtCantRue } = $formulario;
 
     if (txtId.value === "") {
-        if(selectTipo.value===""||selectTipo.value===null)
+        if(window.getComputedStyle(camposSegunTipo).display === "block")
         {
             if (selectTipo.value == "aereo") {
                 const newVehiculo = new Aereo("", txtModelo.value, txtAnoFab.value, parseInt(txtVelMax.value), txtAltura.value, parseInt(txtAutonomia.value));

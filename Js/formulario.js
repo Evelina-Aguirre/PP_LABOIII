@@ -40,7 +40,6 @@ export function vaciarFormulario(formulario) {
 
 }
 
-//////////////////////////////////////////////////////// SECCIÓN FIELDSET -ABM DATOS- ///////////////////////////////////////////////
 document.addEventListener("DOMContentLoaded", cargaAnio);
 document.addEventListener("DOMContentLoaded", cargaVelocidad);
 document.addEventListener("DOMContentLoaded", cargaTipo);
