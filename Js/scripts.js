@@ -35,6 +35,12 @@ const actualizarTabla = (vehiculos) => {
 actualizarTabla(datos);
 
 
+const btnAgregar= document.getElementById("btnAgregarNuevo");
+const seccionFormulario = document.querySelector(".Seccion-Formulario");
+
+btnAgregar.addEventListener("click", function() {
+    seccionFormulario.style.display = "block";
+});
 
 //CARGA CAMPOS DE UN FIELDSET VACIO SEGÚN TIPO SELECCIONADO
 let tipoUsuarioSelect = document.getElementById("tipo");
@@ -157,6 +163,7 @@ window.addEventListener("click", handlerClick);
 function handlerClick(e) {
     if (e.target.nodeName == "TD") {
 
+        seccionFormulario.style.display = "block";
         while (camposSegunTipo.firstChild) {
             camposSegunTipo.removeChild(camposSegunTipo.firstChild);
         }
@@ -191,11 +198,14 @@ function handlerClick(e) {
     if (e.target.matches("input[type='button'][value='Eliminar'][id='btnEliminar']")) {
 
         handlerDelete(parseInt($formulario.txtId.value));
+        seccionFormulario.style.display = "none";
     }
 
     if (e.target.matches("input[type='button'][value='Cancelar']")) {
 
         vaciarFormulario($formulario);
+        seccionFormulario.style.display = "none";
+       
     }
 
 }
@@ -211,21 +221,21 @@ $formulario.addEventListener("submit", (e) => {
     const { txtId, txtModelo, txtAnoFab, txtVelMax, txtAltura, txtAutonomia, txtCantPue, txtCantRue } = $formulario;
 
     if (txtId.value === "") {
-        if(window.getComputedStyle(camposSegunTipo).display === "block")
-        {
+        if (window.getComputedStyle(camposSegunTipo).display === "block") {
             if (selectTipo.value == "aereo") {
                 const newVehiculo = new Aereo("", txtModelo.value, txtAnoFab.value, parseInt(txtVelMax.value), txtAltura.value, parseInt(txtAutonomia.value));
                 handlerCreate(newVehiculo);
-                                
+
             } else if (selectTipo.value == "terrestre") {
                 const newVehiculo = new Terrestre("", txtModelo.value, txtAnoFab.value, txtVelMax.value, txtCantPue.value, txtCantRue.value);
                 handlerCreate(newVehiculo);
             }
             vaciarFormulario($formulario);
-        }else{
+            seccionFormulario.style.display = "none";
+        } else {
             document.getElementById("errorMensaje").style.display = "block";
         }
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById("errorMensaje").style.display = "none";
         }, 4000);
     } else {
@@ -238,6 +248,7 @@ $formulario.addEventListener("submit", (e) => {
             handlerUpdate(newVehiculo);
         }
         vaciarFormulario($formulario);
+        seccionFormulario.style.display = "none";
     }
 
 
@@ -253,9 +264,18 @@ function handlerCreate(nuevoVehiculo) {
 
 function handlerUpdate(editVehiculo) {
     let index = datos.findIndex((veh) => veh.id == editVehiculo.id);
-    datos[index] = editVehiculo;
-    actualizarStorage("datos", datos);
-    actualizarTabla(datos);
+    if (index !== -1) {
+        let datosActualizados = datos.map((vehiculo, i) => {
+            if (i === index) {
+                return editVehiculo;
+            }
+            return vehiculo;
+        });
+        datos[index] = editVehiculo;
+
+        actualizarStorage("datos", datos);
+        actualizarTabla(datos);
+    }
 
 }
 
@@ -264,13 +284,14 @@ function handlerDelete(id) {
     const confirmDelete = confirm("¿Está seguro de que desea eliminar esta entrada?");
     console.log(confirmDelete);
     if (confirmDelete) {
-        let datosActualizado = datos.filter(veh => veh.id !== id);
-        actualizarStorage("datos", datosActualizado);
-        actualizarIds(datosActualizado);
-        actualizarTabla(datosActualizado);
+        let index = datos.findIndex((vehi) => vehi.id == id);
+        console.log(index);
+        datos.splice(index, 1);
+        actualizarStorage("datos", datos);
+        actualizarIds(datos)
+        actualizarTabla(datos);
         $formulario.reset();
         $formulario.txtId.value = "";
-        vaciarFormulario($formulario);
     }
 }
 
@@ -332,11 +353,14 @@ selectFiltrarPor.addEventListener('change', function () {
     }, { terrestres: [], aereos: [] });
 
     if (valorSeleccionado === 'Aereo') {
+        tabla.innerHTML = '';
         actualizarTabla(resultado.aereos);
 
     } else if (valorSeleccionado === 'Terrestre') {
+        tabla.innerHTML = '';
         actualizarTabla(resultado.terrestres);
     } else {
+        tabla.innerHTML = '';
         actualizarTabla(datos);
     }
 
@@ -357,6 +381,9 @@ btnCalcular.addEventListener("click", function () {
     calcularPromedio(datos);
 
 });
+
+
+
 
 
 

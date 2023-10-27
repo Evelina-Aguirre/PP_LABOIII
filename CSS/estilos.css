@@ -1,6 +1,4 @@
 .Encabezado {
-
-    /* background-image: url('../Imagenes/fondo4.PNG'); */
     background-size: cover;
     text-align: center;
     margin-top: 50px;
@@ -34,6 +32,15 @@ h2 {
     border-radius: 20px;
 }
 
+#contenedorBtnAgregar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Seccion-Formulario{
+    display: none;
+}
+
 .Fielset-cargar {
     display: flex;
     justify-content: center;
@@ -57,9 +64,7 @@ h2 {
     background-color: #fff;
     color: #333;
 }
-.Fielset-cargar input[type="text"]{
 
-}
 
 .camposSegunTipo {
     width: 400px;
@@ -149,7 +154,7 @@ input[type="submit"],
 input[type="button"] {
     align-items: center;
     border: none;
-    padding: 10px 10px;
+    padding: 10px 20px;
     cursor: pointer;
     margin: 20px;
     border-radius: 5px;

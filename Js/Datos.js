@@ -1,4 +1,4 @@
-export const datos =
+export var datos =
     [{ "id": 14, "modelo": "Ferrari F100", "anoFab": 1998, "velMax": 400, "cantPue": 2, "cantRue": 4 },
     { "id": 51, "modelo": "DodgeViper", "anoFab": 1991, "velMax": 266, "cantPue": 2, "cantRue": 4 }, {
         "id": 67, "modelo": "Boeing CH-47 Chinook",

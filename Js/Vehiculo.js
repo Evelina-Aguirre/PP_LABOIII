@@ -23,6 +23,7 @@ export default class Vehiculo {
     
     
   }
+  
 export function actualizarIds(datos) {
     let maxId = 0;
     datos.forEach((element) => {
