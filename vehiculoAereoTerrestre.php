@@ -78,6 +78,11 @@ if($method == "PUT") {
     if (isset($objeto['modelo'])==false || isset($objeto['anoFab'])==false || isset($objeto['velMax'])==false || isset($objeto['altMax'])==false || isset($objeto['autonomia'])==false)   {
         $estAereo=0;
     }
+    if (isset($objeto['id']) && $objeto['id'] == 666) {
+        http_response_code(400);
+        echo "No se puede modificar el ID 666.";
+        die();
+    }
    
     if ($estAereo==0 && $estTerrestre==0){
         http_response_code(400);

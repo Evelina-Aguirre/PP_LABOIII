@@ -1,9 +1,11 @@
 import { datos } from "./Datos.js";
 import { crearTabla } from "./tabla.js";
-import { actualizarStorage,actualizarPorFetch } from "./stroraje.js";
+import { actualizarStorage } from "./stroraje.js";
 import { cargarFormulario, vaciarFormulario, cargaTipo } from "./formulario.js";
 import Vehiculo from "./Vehiculo.js";
 import { actualizarIds } from "./Vehiculo.js";
+
+const url = "http://localhost:8080/SP_LABOIII_AGUIRRE/vehiculoAereoTerrestre.php";
 
 class Aereo extends Vehiculo {
 
@@ -25,22 +27,172 @@ class Terrestre extends Vehiculo {
     }
 }
 
+function actualizarPorFetch() {
+    fetch(url, {
+        method: 'GET'
+    })
+        .then(response => {
+            mostrarSpinner();
+            if (response.ok) {
+                console.log(response.status);
+                actualizarTabla(datos);
+                ocultarSpinner();
+            } else if (response.status == 304) {
+                console.log("No hubo cambio en los datos.");
+                mostrarAdvertencia("No se realizo modificación", "Blue");
+                ocultarSpinner();
+            }
+            if (!response.ok) {
+                ocultarSpinner();
+                mostrarAdvertencia("Error al obtener datos.", "Red");
+            }
+            return response.json();
+        })
+        .then(response => {
+            actualizarStorage("datos", datos);
+            console.log("Datos actualizados:", datos);
+        }).catch(error => {
+            ocultarSpinner();
+            console.error("Error en la solicitud fetch:", error);
+            mostrarAdvertencia("Error en la solicitud. Consulta la consola para obtener más detalles.", "Red");
+        });
+
+}
 actualizarPorFetch();
+
+
+/////////////////////////ALTA XMLHttpRequest ////////////////////////////////
+function altaVehiculo(nuevoVehiculo) {
+    const xhttp = new XMLHttpRequest();
+
+    //url "http://localhost:8080/SP_LABOIII_AGUIRRE/vehiculoAereoTerrestre.php"
+    xhttp.open("PUT", url, true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    mostrarSpinner();
+
+
+    xhttp.onreadystatechange = function () {
+        if (xhttp.readyState === 4) {
+
+            if (xhttp.status === 200) {
+                const respuesta = JSON.parse(xhttp.responseText);
+                datos.push(nuevoVehiculo);
+
+                actualizarStorage("datos", datos);
+                actualizarTabla(datos);
+
+                mostrarTablaOcultarFormulario();
+                ocultarSpinner();
+            } else {
+                mostrarAdvertencia("No fue posible realizar el alta", "Red");
+                mostrarTablaOcultarFormulario();
+                setTimeout(function () {
+                    ocultarSpinner();
+                }, 2000);
+            }
+        }
+    };
+
+    xhttp.send(JSON.stringify({
+        modelo: nuevoVehiculo.modelo,
+        anoFab: nuevoVehiculo.anoFab,
+        velMax: nuevoVehiculo.velMax,
+        tipo: nuevoVehiculo instanceof Aereo ? 'aereo' : 'terrestre',
+        ...(nuevoVehiculo instanceof Aereo
+            ? { alturaMax: nuevoVehiculo.altMax, autonomia: nuevoVehiculo.autonomia }
+            : { cantPue: nuevoVehiculo.cantPue, cantRue: nuevoVehiculo.cantRue }
+        ),
+    }));
+}
+
+///////////////////////////Modificar fetch///////////////////////////////////
+async function modificarVehiculo(id, vehiculo) {
+
+    //url "http://localhost:8080/SP_LABOIII_AGUIRRE/vehiculoAereoTerrestre.php";
+    mostrarSpinner();
+
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(vehiculo),
+        });
+
+        if (response.ok) {
+
+            handlerUpdate(vehiculo);
+
+            ocultarSpinner();
+            mostrarTablaOcultarFormulario();
+
+        } else {
+            ocultarSpinner();
+            mostrarAdvertencia("No se pudo realizar la operación.", "Red");
+            mostrarTablaOcultarFormulario();
+        }
+    } catch (error) {
+
+        ocultarSpinner();
+        console.error("Error en la solicitud fetch:", error);
+        mostrarAdvertencia("Error en la solicitud.", "Red");
+    }
+
+}
+
+
+//////////////////////////////////////////ELIMINAR //////////////////////////////////
+function eliminarElemento(id) {
+    mostrarSpinner();
+
+    return new Promise((exito, falla) => {
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: id }),
+        })
+        .then(response => {
+            if (response.ok) {
+                exito();
+            } else {
+                falla("No se pudo realizar la operación.");
+            }
+        })
+        .catch(error => {
+            falla("Error en la solicitud fetch. Consulta la consola para obtener más detalles.");
+        })
+        .finally(() => {
+            ocultarSpinner();
+        });
+    })
+    .then(() => handlerDelete(id))
+    .catch(errorMessage => mostrarAdvertencia(errorMessage, "Red"));
+}
 
 const tabla = document.getElementById("tabla");
 const actualizarTabla = (vehiculos) => {
     tabla.innerHTML = '';
-    console.log(vehiculos);
     tabla.appendChild(crearTabla(vehiculos));
 }
-actualizarTabla(datos);
 
 
-const btnAgregar= document.getElementById("btnAgregarNuevo");
+
+
+const btnAgregarNuevo = document.getElementById("btnAgregarNuevo");
 const seccionFormulario = document.querySelector(".Seccion-Formulario");
+const main = document.querySelector("main");
+const tituloFormulario = document.querySelector('.Titulo-Form');
 
-btnAgregar.addEventListener("click", function() {
-    seccionFormulario.style.display = "block";
+btnAgregarNuevo.addEventListener("click", function () {
+    vaciarFormulario($formulario);
+    tituloFormulario.textContent = 'Alta vehículo';
+    mostrarFormularioOcultandoTabla();
+
+
+
 });
 
 //CARGA CAMPOS DE UN FIELDSET VACIO SEGÚN TIPO SELECCIONADO
@@ -151,11 +303,11 @@ function cargarcamposTipoUsuarioDos() {
 }
 
 function mostrarFormulario(selectedVehiculo) {
-    seccionFormulario.style.display = "block";
+    mostrarFormularioOcultandoTabla();
     while (camposSegunTipo.firstChild) {
         camposSegunTipo.removeChild(camposSegunTipo.firstChild);
     }
-    camposSegunTipo.style.display = "none";
+    camposSegunTipo.style.display = "block";
 
     if (selectedVehiculo.cantRue) {
         tipoUsuarioSelect.value = "terrestre";
@@ -180,8 +332,8 @@ function mostrarFormulario(selectedVehiculo) {
 const $formulario = document.forms[0];
 const $btnAgregar = document.getElementById("btnAgregar");
 const $btnEliminar = document.getElementById("btnEliminar");
-const $btnEliminarEnTabla= document.getElementById("btnEliminarEnTabla");
-const $btnModificarEnTabla=document.getElementById("btnModificarEnTabla");
+const $btnEliminarEnTabla = document.getElementById("btnEliminarEnTabla");
+const $btnModificarEnTabla = document.getElementById("btnModificarEnTabla");
 
 window.addEventListener("click", handlerClick);
 
@@ -192,29 +344,39 @@ function handlerClick(e) {
     if (e.target.nodeName == "TD") {
         const selectedVehiculo = datos.find((per) => per.id == id);
         mostrarFormulario(selectedVehiculo);
+        tituloFormulario.textContent = 'Modificar vehículo';
+        mostrarFormularioOcultandoTabla();
     }
 
     if (e.target.matches("input[type='button'][value='Eliminar'][id='btnEliminar']")) {
         handlerDelete(parseInt($formulario.txtId.value));
         seccionFormulario.style.display = "none";
+        mostrarTablaOcultarFormulario();
     }
 
     if (e.target.matches("input[type='button'][value='Cancelar']")) {
         vaciarFormulario($formulario);
-        seccionFormulario.style.display = "none";
+        mostrarTablaOcultarFormulario();
     }
+
+
 }
+
+
 
 tabla.addEventListener("click", function (e) {
     const id = obtenerIdFila(e.target);
 
     if (e.target.matches("button.btnEliminarEnTabla")) {
         const selectedVehiculo = datos.find((per) => per.id == id);
-        handlerDelete(parseInt(selectedVehiculo.id));
+        eliminarElemento(parseInt(selectedVehiculo.id));
+        mostrarTablaOcultarFormulario();
+
     }
 
     if (e.target.matches("button.btnModificarEnTabla")) {
         const selectedVehiculo = datos.find((per) => per.id == id);
+        tituloFormulario.textContent = 'Modificar vehículo';
         mostrarFormulario(selectedVehiculo);
     }
 });
@@ -241,24 +403,36 @@ function obtenerIdFila(elemento) {
 
 $formulario.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log($formulario.txtId.value);
+
     var selectTipo = document.getElementById("tipo");
-    console.log(selectTipo.value);
+
 
     const { txtId, txtModelo, txtAnoFab, txtVelMax, txtAltura, txtAutonomia, txtCantPue, txtCantRue } = $formulario;
+    const body = {
+        modelo: txtModelo.value,
+        anoFab: txtAnoFab.value,
+        velMax: txtVelMax.value,
+        tipo: tipoUsuarioSelect.value,
+        ...(tipoUsuarioSelect.value === "aereo"
+            ? { alturaMax: txtAltura.value, autonomia: txtAutonomia.value }
+            : { cantPue: txtCantPue.value, cantRue: txtCantRue.value }
+        ),
+    };
+
 
     if (txtId.value === "") {
         if (window.getComputedStyle(camposSegunTipo).display === "block") {
             if (selectTipo.value == "aereo") {
                 const newVehiculo = new Aereo("", txtModelo.value, txtAnoFab.value, parseInt(txtVelMax.value), txtAltura.value, parseInt(txtAutonomia.value));
-                handlerCreate(newVehiculo);
+                altaVehiculo(newVehiculo);
 
             } else if (selectTipo.value == "terrestre") {
                 const newVehiculo = new Terrestre("", txtModelo.value, txtAnoFab.value, txtVelMax.value, txtCantPue.value, txtCantRue.value);
-                handlerCreate(newVehiculo);
+                altaVehiculo(newVehiculo);
             }
             vaciarFormulario($formulario);
             seccionFormulario.style.display = "none";
+            mostrarTablaOcultarFormulario();
         } else {
             document.getElementById("errorMensaje").style.display = "block";
         }
@@ -268,18 +442,23 @@ $formulario.addEventListener("submit", (e) => {
     } else {
         if (selectTipo.value == "aereo") {
             const newVehiculo = new Aereo(txtId.value, txtModelo.value, txtAnoFab.value, txtVelMax.value, txtAltura.value, parseInt(txtAutonomia.value));
-            handlerUpdate(newVehiculo);
+            modificarVehiculo(txtId.value, newVehiculo);
+            mostrarTablaOcultarFormulario();
 
         } else if (selectTipo.value == "terrestre") {
             const newVehiculo = new Terrestre(txtId.value, txtModelo.value, txtAnoFab.value, txtVelMax.value, txtCantPue.value, txtCantRue.value);
-            handlerUpdate(newVehiculo);
+            modificarVehiculo(txtId.value, newVehiculo);
+            mostrarTablaOcultarFormulario();
         }
         vaciarFormulario($formulario);
         seccionFormulario.style.display = "none";
+        mostrarTablaOcultarFormulario();
     }
 
 
 });
+
+
 
 function handlerCreate(nuevoVehiculo) {
 
@@ -299,7 +478,6 @@ function handlerUpdate(editVehiculo) {
             return vehiculo;
         });
         datos[index] = editVehiculo;
-
         actualizarStorage("datos", datos);
         actualizarTabla(datos);
     }
@@ -315,10 +493,11 @@ function handlerDelete(id) {
         console.log(index);
         datos.splice(index, 1);
         actualizarStorage("datos", datos);
-        actualizarIds(datos)
+        actualizarIds(datos);
         actualizarTabla(datos);
         $formulario.reset();
         $formulario.txtId.value = "";
+
     }
 }
 
@@ -409,12 +588,65 @@ btnCalcular.addEventListener("click", function () {
 
 });
 
+function mostrarTablaOcultarFormulario() {
+    main.style.display = "block";
+    seccionFormulario.style.display = "none";
+}
+
+function mostrarFormularioOcultandoTabla() {
+    main.style.display = "none";
+    seccionFormulario.style.display = "block";
+}
 
 
+function mostrarAdvertencia(mensaje, color) {
+    const mensajeFlotante = document.createElement('div');
+    mensajeFlotante.className = 'mensaje-flotante';
+    mensajeFlotante.textContent = mensaje;
 
+    document.body.appendChild(mensajeFlotante);
 
+    mensajeFlotante.style.position = 'fixed';
+    mensajeFlotante.style.top = '50%';
+    mensajeFlotante.style.left = '50%';
+    mensajeFlotante.style.transform = 'translate(-50%, -50%)';
+    mensajeFlotante.style.backgroundColor = color;
+    mensajeFlotante.style.padding = '50px';
+    mensajeFlotante.style.border = '2px solid #ccc';
+    mensajeFlotante.style.borderRadius = '10px';
+    mensajeFlotante.style.fontSize = '30px';
 
+    setTimeout(() => {
+        document.body.removeChild(mensajeFlotante);
+    }, 5000);
+}
 
+/////////SPINNNER
+document.addEventListener("DOMContentLoaded", function () {
+
+    mostrarSpinner();
+    setTimeout(function () {
+        ocultarSpinner();
+    }, 2000);
+});
+
+function mostrarSpinner() {
+    var spinner = document.getElementById("spinner");
+    var fondoBloqueo = document.getElementById("fondoBloqueo");
+
+    spinner.style.display = "block";
+    fondoBloqueo.style.display = "block";
+    document.body.style.overflow = "hidden";
+}
+
+function ocultarSpinner() {
+    var spinner = document.getElementById("spinner");
+    var fondoBloqueo = document.getElementById("fondoBloqueo");
+
+    spinner.style.display = "none";
+    fondoBloqueo.style.display = "none";
+    document.body.style.overflow = "auto";
+}
 
 
 

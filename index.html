@@ -8,15 +8,20 @@
         <script src="./Js/scripts.js" type="module" defer></script>
     <title>ABM Vehículos</title>
 </head>
+
 <body>
-    <div class="spinner-container" id="spinner">
-        <div class="spinner"></div>
-      </div>
-    <div class="Encabezado">
-        <h1>ABM Vehículos</h1>
+    <div id="fondoBloqueo"></div>
+    <div id="spinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); z-index: 9999;">
+     
+        <div class="spinner" style="margin: 0 auto;">
+            <img src="./imagenes/spinner3.gif" alt="Loading..." class="spinner-img" style="display: block; margin: 0 auto;">
+        </div>
     </div>
-    <main>
-        <h2>Datos de lo vehículos en el sistema</h2>
+    <div class="Encabezado">
+        <h1>Vehículos Aereos y Terrestres</h1>
+    </div>
+    <main class = "tabla-filtro-checks">
+        <h2>Datos cargados:</h2>
         <fieldset class="datos">
             <div class="parteSuperior">
                 <label for="Filtrar" style="font-size: 20px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Filtrar por</label>
@@ -49,43 +54,43 @@
         <p id="contenedorBtnAgregar">
             <input type="button" value="Agregar elemento" id="btnAgregarNuevo">
         </p>
-        <section class="Seccion-Formulario">
-            <h2 class="Titulo-Form">Completa el formulario</h2>
-            <form action="Formulario">
-                <div class="Fielset-cargar">
-                    <fieldset>
-                        <legend>Información del vehículo: </legend>
-                        <label for="id"> ID:</label>
-                        <input type="text" name="txtId" class="form-control" placeholder="Id" readonly>
-                        <br>
-                        <label for="modelo"> Modelo:</label>
-                        <input type="text" name="txtModelo" class="form-control" placeholder="Modelo" required>
-                        <br>
-                        <label for="anoFab"> Año:</label>
-                        <select name="txtAnoFab" id="txtAnoFab">Año fabricación</select>
-                        <br>
-                        <label for="velMax" class="form-label"> Velocidad máx.:</label>
-                        <select name="txtVelMax" id="txtVelMax">Velocidad</select>
-                        <br><br>
-                        <label for="tipo" class="form-label"> Tipo:</label>
-                        <select name="tipo" id="tipo"></select> 
-                        <div id="errorMensaje" style="display: none;  text-shadow: none; font-weight: bold; font-size: 13px;color: rgb(255, 0, 0);">
-                            Debe seleccionar qué tipo vehículo desea cargar.</div>
-                        <fieldset id="camposSegunTipo" class="camposSegunTipo">
-                        </fieldset>
-                        <p class="botonesABM">
-                            <input type="submit" value="Agregar" id="btnAgregar">
-                            <input type="button" value="Eliminar" id="btnEliminar" disabled>
-                            <input type="button" value="Cancelar" id="btnCancelar">
-                        </p>
-                        <br>
-                        <br>
-                    </fieldset>
-                </div>
-            </form>
-        </section>
         
     </main>
+    <section class="Seccion-Formulario">
+        <h2 class="Titulo-Form">Completa el formulario</h2>
+        <form action="Formulario">
+            <div class="Fielset-cargar">
+                <fieldset>
+                    <legend>Información del vehículo: </legend>
+                    <label for="id"> ID:</label>
+                    <input type="text" name="txtId" class="form-control" placeholder="Id" readonly>
+                    <br>
+                    <label for="modelo"> Modelo:</label>
+                    <input type="text" name="txtModelo" class="form-control" placeholder="Modelo" required>
+                    <br>
+                    <label for="anoFab"> Año:</label>
+                    <select name="txtAnoFab" id="txtAnoFab">Año fabricación</select>
+                    <br>
+                    <label for="velMax" class="form-label"> Velocidad máx.:</label>
+                    <select name="txtVelMax" id="txtVelMax">Velocidad</select>
+                    <br><br>
+                    <label for="tipo" class="form-label"> Tipo:</label>
+                    <select name="tipo" id="tipo"></select> 
+                    <div id="errorMensaje" style="display: none;  text-shadow: none; font-weight: bold; font-size: 13px;color: rgb(255, 0, 0);">
+                        Debe seleccionar qué tipo vehículo desea cargar.</div>
+                    <fieldset id="camposSegunTipo" class="camposSegunTipo">
+                    </fieldset>
+                    <p class="botonesABM">
+                        <input type="submit" value="Agregar" id="btnAgregar">
+                        <input type="button" value="Eliminar" id="btnEliminar" disabled>
+                        <input type="button" value="Cancelar" id="btnCancelar">
+                    </p>
+                    <br>
+                    <br>
+                </fieldset>
+            </div>
+        </form>
+    </section>
 
 </body>
 
