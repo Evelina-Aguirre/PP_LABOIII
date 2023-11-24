@@ -1,6 +1,6 @@
 import { datos } from "./Datos.js";
 import { crearTabla } from "./tabla.js";
-import { actualizarStorage } from "./stroraje.js";
+import { actualizarStorage,actualizarPorFetch } from "./stroraje.js";
 import { cargarFormulario, vaciarFormulario, cargaTipo } from "./formulario.js";
 import Vehiculo from "./Vehiculo.js";
 import { actualizarIds } from "./Vehiculo.js";
@@ -25,6 +25,7 @@ class Terrestre extends Vehiculo {
     }
 }
 
+actualizarPorFetch();
 
 const tabla = document.getElementById("tabla");
 const actualizarTabla = (vehiculos) => {
@@ -149,7 +150,29 @@ function cargarcamposTipoUsuarioDos() {
     camposSegunTipo.appendChild(inpuntCantRuedas);
 }
 
+function mostrarFormulario(selectedVehiculo) {
+    seccionFormulario.style.display = "block";
+    while (camposSegunTipo.firstChild) {
+        camposSegunTipo.removeChild(camposSegunTipo.firstChild);
+    }
+    camposSegunTipo.style.display = "none";
 
+    if (selectedVehiculo.cantRue) {
+        tipoUsuarioSelect.value = "terrestre";
+        camposSegunTipo.style.display = "block";
+        cargarcamposTipoUsuarioDos();
+    }
+    if (selectedVehiculo.autonomia) {
+        tipoUsuarioSelect.value = "aereo";
+        camposSegunTipo.style.display = "block";
+        cargarcamposTipoUsuarioUno();
+    }
+
+    cargarFormulario($formulario, selectedVehiculo);
+
+    $btnAgregar.value = "Modificar";
+    $btnEliminar.disabled = false;
+}
 
 
 ////////////////////////////////////// ABM A PARTIR DE FORM ////////////////////////////////////////////
@@ -157,58 +180,62 @@ function cargarcamposTipoUsuarioDos() {
 const $formulario = document.forms[0];
 const $btnAgregar = document.getElementById("btnAgregar");
 const $btnEliminar = document.getElementById("btnEliminar");
+const $btnEliminarEnTabla= document.getElementById("btnEliminarEnTabla");
+const $btnModificarEnTabla=document.getElementById("btnModificarEnTabla");
 
 window.addEventListener("click", handlerClick);
 
+
 function handlerClick(e) {
+    const id = obtenerIdFila(e.target);
+
     if (e.target.nodeName == "TD") {
-
-        seccionFormulario.style.display = "block";
-        while (camposSegunTipo.firstChild) {
-            camposSegunTipo.removeChild(camposSegunTipo.firstChild);
-        }
-        camposSegunTipo.style.display = "none";
-        const id = e.target.parentElement.dataset.id;
-        console.log(id);
-        if (e.target.matches("td")) {
-            const id = e.target.parentElement.dataset.id;
-            const selectedVehiculo = datos.find((per) => {
-                return per.id == id;
-            })
-
-            if (selectedVehiculo.cantRue) {
-
-                tipoUsuarioSelect.value = "terrestre";
-                camposSegunTipo.style.display = "block";
-                cargarcamposTipoUsuarioDos();
-
-            }
-            if (selectedVehiculo.autonomia) {
-                tipoUsuarioSelect.value = "aereo";
-                camposSegunTipo.style.display = "block";
-                cargarcamposTipoUsuarioUno();
-            }
-            cargarFormulario($formulario, selectedVehiculo);
-
-            $btnAgregar.value = "Modificar";
-            $btnEliminar.disabled = false;
-        }
-
+        const selectedVehiculo = datos.find((per) => per.id == id);
+        mostrarFormulario(selectedVehiculo);
     }
-    if (e.target.matches("input[type='button'][value='Eliminar'][id='btnEliminar']")) {
 
+    if (e.target.matches("input[type='button'][value='Eliminar'][id='btnEliminar']")) {
         handlerDelete(parseInt($formulario.txtId.value));
         seccionFormulario.style.display = "none";
     }
 
     if (e.target.matches("input[type='button'][value='Cancelar']")) {
-
         vaciarFormulario($formulario);
         seccionFormulario.style.display = "none";
-       
+    }
+}
+
+tabla.addEventListener("click", function (e) {
+    const id = obtenerIdFila(e.target);
+
+    if (e.target.matches("button.btnEliminarEnTabla")) {
+        const selectedVehiculo = datos.find((per) => per.id == id);
+        handlerDelete(parseInt(selectedVehiculo.id));
     }
 
+    if (e.target.matches("button.btnModificarEnTabla")) {
+        const selectedVehiculo = datos.find((per) => per.id == id);
+        mostrarFormulario(selectedVehiculo);
+    }
+});
+
+function obtenerIdFila(elemento) {
+    const fila = elemento.closest("tr");
+
+    if (fila) {
+        const celdas = fila.getElementsByTagName("td");
+        if (celdas.length > 0) {
+            const id = celdas[0].textContent.trim();
+
+            if (id) {
+                return id;
+            }
+        }
+    }
+    return null;
 }
+
+
 
 
 

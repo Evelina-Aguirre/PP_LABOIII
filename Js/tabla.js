@@ -1,78 +1,75 @@
-export const crearTabla=(datos)=>{
 
+const columnasJSON = [
+    "id", "modelo", "anoFab", "velMax", "cantPue", "cantRue", "velocidad", "autonomia", "MODIFICAR", "BORRAR"
+];
+
+
+export const crearTabla = (datos) => {
     const tabla = document.createElement("table");
-    const tHead=document.createElement("thead");
-    const cabecera= document.createElement("tr");
-   
-    while (tabla.firstChild) {
-        tabla.removeChild(tabla.firstChild);
-    }
-    for (const key in datos[0]) {
-        const th=document.createElement("th");
-        th.textContent=key;
+    const tHead = document.createElement("thead");
+    const cabecera = document.createElement("tr");
+
+    const todasPropiedades = Array.from(new Set(datos.flatMap(Object.keys)));
+
+    todasPropiedades.forEach(nombreColumna => {
+        const th = document.createElement("th");
+        th.textContent = nombreColumna.toUpperCase(); 
         cabecera.appendChild(th);
-        if(key == "cantRue")
-        {
-            const th2=document.createElement("th");
-            th2.textContent="Altura";
-            cabecera.appendChild(th2);
-            const th3=document.createElement("th");
-            th3.textContent="Autonomia";
-            cabecera.appendChild(th3);
-        }
-        if(key == "autonomia")
-        {
-            const th2=document.createElement("th");
-            th2.textContent="Ruedas";
-            cabecera.appendChild(th2);
-            const th3=document.createElement("th");
-            th3.textContent="Puertas";
-            cabecera.appendChild(th3);
-        }
-    }
-    tHead.appendChild(cabecera);
-
-    
-    const tBody = document.createElement("tbody");
-    console.log(datos);
-    datos.forEach(element => {
-        const tr=document.createElement("tr");
-        for (const key in element) {
-            if (key === "id") {
-                tr.setAttribute("data-id", element[key]);
-            }
-            if(key=="altMax")
-            {
-                const td3=document.createElement("td");
-                td3.textContent="---";
-                tr.appendChild(td3);
-                const td4=document.createElement("td");
-                td4.textContent="---";
-                tr.appendChild(td4);
-    
-            }
-            const td = document.createElement("td");
-            td.textContent=element[key];
-            tr.appendChild(td);
-
-            if(key=="cantRue")
-            {
-                const td3=document.createElement("td");
-                td3.textContent="---";
-                tr.appendChild(td3);
-                const td4=document.createElement("td");
-                td4.textContent="---";
-                tr.appendChild(td4);
-    
-            }
-        }
-        tBody.appendChild(tr);    
     });
 
+    const thModificar = document.createElement("th");
+    thModificar.textContent = "MODIFICAR";
+    cabecera.appendChild(thModificar);
+
+    const thBorrar = document.createElement("th");
+    thBorrar.textContent = "BORRAR";
+    cabecera.appendChild(thBorrar);
+
+    tHead.appendChild(cabecera);
     tabla.appendChild(tHead);
+
+    const tBody = document.createElement("tbody");
+
+    datos.forEach(element => {
+        const tr = document.createElement("tr");
+
+        todasPropiedades.forEach(nombreColumna => {
+            const td = document.createElement("td");
+
+            if (nombreColumna in element) {
+                td.textContent = element[nombreColumna];
+            } else {
+                td.textContent = "----";
+            }
+
+            tr.appendChild(td);
+        });
+
+       
+        const tdModificarEnTabla = document.createElement("td");
+        const btnModificarEnTabla = document.createElement("button");
+        btnModificarEnTabla.textContent = "Modificar";
+        btnModificarEnTabla.id = "btnModificarEnTabla";
+        btnModificarEnTabla.classList.add("btnModificarEnTabla");
+        tdModificarEnTabla.appendChild(btnModificarEnTabla);
+        tr.appendChild(tdModificarEnTabla);
+
+        const tdEliminarEnTabla = document.createElement("td");
+        const btnEliminarEnTabla = document.createElement("button");
+        btnEliminarEnTabla.textContent = "Borrar";
+        btnEliminarEnTabla.id = "btnEliminarEnTabla";
+        btnEliminarEnTabla.classList.add("btnEliminarEnTabla");
+        tdEliminarEnTabla.appendChild(btnEliminarEnTabla);
+        tr.appendChild(tdEliminarEnTabla);
+
+        tBody.appendChild(tr);
+    });
+
     tabla.appendChild(tBody);
     return tabla;
-}
+};
+
+
 
 
 

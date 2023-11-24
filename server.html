@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    const url = "http://localhost:8080/vehiculoAereoTerrestre.php";
+
+
+    function p1() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState == 4) {
+                if (xhttp.status == 200) {
+                    console.log(xhttp.response);
+                    //si fue un update 
+                    //primeo actualizar el objeto en memoria
+                    //ocultar la pantalla de espera (spinner)
+                    //mostrariasmo el nuevo listado 
+                }
+                else {
+                    console.log("No se pudieron obtener los datos");
+                    //ocualtar la pantalla de espera
+                    //alert al usuario
+                    //mostrar listado nuevamente 
+                }
+            }
+        };
+        xhttp.open("GET", url, true, "usuario", "pass");
+        xhttp.send();
+    }
+
+
+    function p2() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState == 4) {
+                if (xhttp.status == 200) {
+                    console.log(xhttp.response);
+                }
+                else {
+                    console.log("Error:", xhttp.response);
+                }
+
+            }
+        };
+        xhttp.open("DELETE", url, true, "usuario", "pass");
+        xhttp.setRequestHeader('Content-type', 'application/json');
+        xhttp.send('{"id":666}');
+    }
+
+    async function f1() {
+        let consulta = fetch(url, {
+            method: 'DELETE',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ 'id': 666 })
+        });
+
+        consulta.then(respuesta => {
+            if (respuesta.status() == 200) {
+                respuesta.text()
+            }
+            else {
+                console.log('Error');
+                throw 'ERROR';
+            }
+        }).then(texto => console.log(texto));
+    };
+
+
+    async function f2() {
+        let consulta = fetch(url, {
+            method: 'DELETE',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ 'id': 666 })
+        });
+
+        consulta.then(respuesta => {
+            if (respuesta.status === 200) {
+                return respuesta.text();
+            } else {
+                throw new Error('Falló la solicitud');
+            }
+        }).then(texto => {
+            console.log(texto);
+        }).catch(error => {
+            console.log(error.message);
+        });
+    };
+
+
+
+
+
+
+
+    // p1();
+    //p2();
+    //f1();
+    f2();
+
+
+</script>>
+
+<body>
+</body>
+</body>
+
+</html>
